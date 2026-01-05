@@ -2,13 +2,28 @@ version: '3.8'
 
 services:
   portfolio:
-    container_name: portfolio-soft
-    build: .
-    image: portfolio-soft:latest
-    ports:
-      - "8080:80"
-    restart: unless-stopped
-    # Uncomment and adjust labels for Traefik if needed
-    # labels:
-    #   - "traefik.enable=true"
-    #   - "traefik.http.routers.portfolio.rule=Host(`portfolio.local`)"
+    container_name: portfolio-v2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    expose:
+      - "80"
+    labels:
+      traefik.enable: true
+      traefik.http.routers.portfolio-v2.rule: Host(`portfolio-v2.damswallace.fr`)
+      traefik.http.routers.portfolio-v2.entryPoints: websecure
+      traefik.http.services.portfolio-v2.loadbalancer.server.port: 80
+      traefik.http.routers.portfolio-v2.middlewares: middleware-secured-chain@file
+    networks:
+      br-dams:
+        ipv4_address: 172.18.0.121
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  br-dams:
+    external: true
