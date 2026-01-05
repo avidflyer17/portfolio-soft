@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  portfolio:
+    container_name: portfolio-soft
+    build: .
+    image: portfolio-soft:latest
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    # Uncomment and adjust labels for Traefik if needed
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.portfolio.rule=Host(`portfolio.local`)"
